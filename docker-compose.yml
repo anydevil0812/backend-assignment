@@ -1,0 +1,33 @@
+version: '3'
+services: # 실행하려는 컨테이너들 정의
+  redis: # 서비스명
+    image: redis:alpine3.18
+    container_name: redis # 컨테이너명 
+    ports: # 포트 설정(컨테이너 외부:내부)
+      - 6379:6379 
+    volumes: # 볼륨 설정(컨테이너 외부:내부)
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+    restart: always # 컨테이너 종료 시 재시작 여부
+    environment:
+      - TZ=Asia/Seoul
+    networks:
+      - test_network
+  springboot:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: spring_boot
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_started
+    restart: always
+    networks:
+      - test_network
+networks:
+  test_network:
+    driver: bridge 
