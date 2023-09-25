@@ -1,7 +1,7 @@
-# Flutter web sample
-A new Flutter Web project.
+# Flutter Desktop sample
+A new Flutter Desktop project.
 
 ## Guide
 flutter pub get<br>
-flutter build web<br>
-http://localhost:80
+flutter build windows<br>
+build/windows/runner/Release/agent_sample.exe 실행
