@@ -1,0 +1,15 @@
+package com.example.config;
+
+import org.springframework.beans.factory.annotation.Value;
+
+public class RedisConfig {
+	
+	@Value("${spring.data.redis.host}")
+	private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
+
+    @Value("${spring.data.redis.password}")
+    private int password;
+}

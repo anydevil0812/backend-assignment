@@ -1,0 +1,6 @@
+FROM azul/zulu-openjdk:13
+
+ENV APPDIR=/app/api/classes
+WORKDIR ${APPDIR}
+ENV JAVA_DEBUG_OPT="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+EXPOSE 8080 5005

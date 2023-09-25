@@ -1,33 +1,87 @@
-version: '3'
+version: "3"
 services: # 실행하려는 컨테이너들 정의
-  redis: # 서비스명
+  redis-server: # 서비스명
     image: redis:alpine3.18
-    container_name: redis # 컨테이너명 
     ports: # 포트 설정(컨테이너 외부:내부)
-      - 6379:6379 
+      - 6379:6379
     volumes: # 볼륨 설정(컨테이너 외부:내부)
       - ./redis/data:/data
-      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+      - ./redis/conf:/usr/local/conf
     restart: always # 컨테이너 종료 시 재시작 여부
     environment:
-      - TZ=Asia/Seoul
+      TZ: "Asia/Seoul"
+    networks:
+      - test_network
+  mariadb:
+    image: mariadb:10.5.8
+    container_name: database
+    volumes:
+      - ./mariadb/conf.d:/etc/mysql/conf.d # 설정 파일
+      - ./mariadb/data:/var/lib/mysql # DB 데이터
+      - ./mariadb/initdb.d:/docker-entrypoint-initdb.d # 컨테이너 생성 시 실행할 SQL문
+    env_file: .env
+    environment:
+      TZ: "Asia/Seoul"
+    restart: always
+    ports:
+      - 3306:3306
     networks:
       - test_network
   springboot:
-    build: 
-      context: .
-      dockerfile: ./Dockerfile
+    build:
+      context: ./springboot/test # Dockerfile 경로 지정
     container_name: spring_boot
     ports:
       - "8080:8080"
     volumes:
-      - .:/app
+      - ./springboot/test/var/log:/var/log
+    environment:
+      TZ: "Asia/Seoul"
     depends_on:
-      redis:
+      mariadb:
         condition: service_started
+      redis-server:
+        condition: service_started
+      nginx:
+        condition: service_started
+    restart: always
+    networks:
+      - test_network
+  websocket:
+    build:
+      context: ./websocket
+    container_name: websocket
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./websocket:/app
+    depends_on:
+      mariadb:
+        condition: service_started
+      redis-server:
+        condition: service_started
+      nginx:
+        condition: service_started
+      springboot:
+        condition: service_started
+    restart: always
+    environment:
+      TZ: "Asia/Seoul"
+    networks:
+      - test_network
+  nginx:
+    image: nginx:1.24.0
+    container_name: nginx-test
+    ports:
+      - "80:80"
+    volumes:
+      - ./web_manager_sample/build/web:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    environment:
+      TZ: "Asia/Seoul"
     restart: always
     networks:
       - test_network
 networks:
   test_network:
-    driver: bridge 
+    driver: bridge

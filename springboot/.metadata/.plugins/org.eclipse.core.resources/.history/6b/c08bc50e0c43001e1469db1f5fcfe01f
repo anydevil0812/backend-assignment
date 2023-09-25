@@ -1,0 +1,7 @@
+FROM openjdk:11-jdk-slim
+
+ENV APPDIR=/app/api/classes
+WORKDIR ${APPDIR}
+COPY build/libs/redistest-0.0.1-SNAPSHOT.jar redistest.jar
+ENTRYPOINT exec java -jar redistest.jar
+EXPOSE 8080 5005

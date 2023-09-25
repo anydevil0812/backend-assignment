@@ -1,5 +1,0 @@
-FROM openjdk:11-jdk-slim
-
-COPY build/libs/app.jar api.jar
-ENTRYPOINT exec java -jar api.jar
-EXPOSE 8080

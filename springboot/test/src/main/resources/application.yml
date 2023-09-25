@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://database:3306/test
+    driverClassName: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+    jpa:
+      hibernate:
+        ddl-auto: update
+  redis:
+    host: redis-server
+    port: 6379

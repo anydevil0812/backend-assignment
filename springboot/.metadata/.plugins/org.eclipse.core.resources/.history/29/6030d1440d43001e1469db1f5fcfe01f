@@ -1,0 +1,7 @@
+FROM openjdk:11-jdk-slim
+
+ENV APPDIR=/app/api/classes
+WORKDIR ${APPDIR}
+COPY build/libs/boottest-0.0.1-SNAPSHOT.jar boottest.jar
+ENTRYPOINT exec java -jar boottest.jar
+EXPOSE 8080
