@@ -2,5 +2,5 @@
 A new Flutter Web project.
 
 ## Guide
-flutter pub get
+flutter pub get<br>
 flutter build web
