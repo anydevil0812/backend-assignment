@@ -5,4 +5,4 @@ A new Flutter Desktop project.
 flutter pub get<br>
 flutter channel master<br>
 flutter build windows<br>
-build/windows/runner/Release/agent_sample.exe 실행
+build/windows/x64/runner/Release/agent_sample.exe 실행
