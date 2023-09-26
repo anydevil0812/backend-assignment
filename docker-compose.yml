@@ -53,8 +53,6 @@ services: # 실행하려는 컨테이너들 정의
     container_name: websocket
     ports:
       - "3000:3000"
-    volumes:
-      - ./websocket:/app
     depends_on:
       mariadb:
         condition: service_started
