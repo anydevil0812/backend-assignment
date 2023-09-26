@@ -41,26 +41,4 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    // 밑 부분은 websocket이 아닌 Spring Boot에서의 sub에 대한 설정!
-    // ListenerAdapter 설정
-//    @Bean
-//    MessageListenerAdapter messageListenerAdapter() {
-//        return new MessageListenerAdapter(new RedisSubService());
-//    } // MessageListener를 implements한 RedisSubService를 파라미터로 입력
-
-    // pub/sub 토픽 설정
-//    @Bean
-//    ChannelTopic topic() {
-//        return new ChannelTopic("topic2");
-//    }
-
-    // 컨테이너 설정 => ListenerAdapter와 ChannelTopic으로 redis pub/sub 메시지를 처리하는 Listener 생성
-//    @Bean
-//    RedisMessageListenerContainer redisContainer() {
-//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(redisConnectionFactory());
-//        container.addMessageListener(messageListenerAdapter(), topic());
-//        return container;
-//    }
-
 }

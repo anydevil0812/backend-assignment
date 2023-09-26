@@ -18,10 +18,9 @@ public class RedisController {
     private RedisPubService redisPubService;
 
     @PostMapping("/api/chat")
-    public String pubSub(@RequestBody ChatMessage chatMessage) {
+    public String pubSub(@RequestBody ChatMessage chatMessage) throws Exception {
         //메시지 보내기
         redisPubService.sendMessage(chatMessage);
-
         return "success";
     }
 }

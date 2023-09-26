@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 20초마다 설정 파일의 변경을 확인하여 변경 시 갱신 -->
+<configuration scan="true" scanPeriod="20 seconds">
+
+    <property resource="logback.properties"/>
+
+    <!--Environment 내의 프로퍼티들을 개별적으로 설정-->
+    <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root"/>
+    <property name="LOG_PATH" value="${log.config.path}"/>
+    <property name="LOG_FILE_NAME" value="${log.config.filename}"/>
+    <property name="ERR_LOG_FILE_NAME" value="error"/>
+    <property name="LOG_PATTERN" value="%p %d{yyyy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %msg%n "/>
+
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 인코딩 방식 및 패턴 설정-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 에러의 경우 파일에 로그 처리 -->
+    <appender name="File-Error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${ERR_LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- INFO 레벨의 로그를 저장할 앱렌더 추가 -->
+    <appender name="File-Info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- root 레벨 설정 -->
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="CONSOLE"/>
+        <!-- INFO 레벨 로그는 Info appender로 보냄 -->
+        <appender-ref ref="File-Info"/>
+        <!-- ERROR 레벨 로그는 Error appender로 보냄 -->
+        <appender-ref ref="File-Error"/>
+    </root>
+
+    <!-- Tomcat 로깅 레벨 설정 -->
+    <logger name="org.apache.catalina.startup" level="${LOG_LEVEL}" />
+    <logger name="org.apache.coyote" level="${LOG_LEVEL}" />
+
+    <!-- Tomcat Access 로그 레벨 설정 -->
+    <logger name="org.apache.catalina.valves.AccessLogValve" level="${LOG_LEVEL}" />
+</configuration>
