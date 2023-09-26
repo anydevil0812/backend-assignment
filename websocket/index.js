@@ -25,10 +25,6 @@ Subscriber.connect().then();
 function subscribeToChannel(channel) {
     Subscriber.subscribe(channel, (message) => {
         console.log(`message : ${message}`);
-        console.log(typeof message);
-        const a = {"sender" : message["sender"], "context" : message["context"]}
-        console.log(`message : ${a}`);
-        console.log(typeof a);
         io.emit("message", message);
     });
 }
